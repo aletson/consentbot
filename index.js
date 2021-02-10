@@ -21,6 +21,9 @@ client.on('ready', () => {
 
 client.on('guildCreate', (guild) => {
   // Client has joined a guild. Prompt for initial setup steps.
+    // Does the guild already exist? (check first)
+    
+    //If the guild does not exist, add it.
     var params = {
         TableName: table,
         Item:{
