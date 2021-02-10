@@ -37,6 +37,9 @@ client.on('guildCreate', (guild) => {
             console.error(JSON.stringify(err, null, 2));
         }
     });
+    client.users.fetch(guild.owner).then(u => {
+        u.send('Thanks for adding Consentbot! Please review the readme for next setup steps: https://github.com/aletson/consentbot/blob/main/README.md');
+    });
 });
 
 client.on('message', async (message) => {
