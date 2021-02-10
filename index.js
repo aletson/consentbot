@@ -24,22 +24,37 @@ client.on('ready', () => {
 client.on('guildCreate', (guild) => {
   // Client has joined a guild. Prompt for initial setup steps.
     // Does the guild already exist? (check first)
-    
-    //If the guild does not exist, add it.
+    var new_guild = true;
     var params = {
         TableName: table,
-        Item:{
+        Key:{
             "guild_id": guild.id
         }
     };
-    dynamo_client.put(params, function(err, data) {
-        if(err) {
-            console.error(JSON.stringify(err, null, 2));
+    await dynamo_client.get(params, function(err, data) {
+        if(data.Item) {
+            if (data.Item.guild_id == guild.id) {
+                new_guild = false;
+            }
         }
     });
-    client.users.fetch(guild.owner).then(u => {
-        u.send('Thanks for adding Consentbot! Please review the readme for next setup steps: https://github.com/aletson/consentbot/blob/main/README.md');
-    });
+    //If the guild does not exist, add it.
+    if(new_guild) {
+        var params = {
+            TableName: table,
+            Item:{
+                "guild_id": guild.id
+            }
+        };
+        dynamo_client.put(params, function(err, data) {
+            if(err) {
+                console.error(JSON.stringify(err, null, 2));
+            }
+        });
+        client.users.fetch(guild.owner).then(u => {
+            u.send('Thanks for adding Consentbot! Please review the readme for next setup steps: https://github.com/aletson/consentbot/blob/main/README.md');
+        });
+    }
 });
 
 client.on('message', async (message) => {
