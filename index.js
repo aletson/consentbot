@@ -24,7 +24,7 @@ client.on('guildCreate', (guild) => {
     var params = {
         TableName: table,
         Item:{
-            "guild_id": guild
+            "guild_id": guild.id
         }
     };
     dynamo_client.put(params, function(err, data) {
