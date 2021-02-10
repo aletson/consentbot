@@ -85,7 +85,12 @@ client.on('message', async (message) => {
                 }); // end pingchannel command!
             } else if (command.substr(0, message.content.indexOf(' ')) == 'cardchannel') {
                 var card_message = await message.mentions.channels.first.send('Placeholder text for reacting for cards');
+                await card_message.react('🟢');
+                await card_message.react('🟡');
+                await card_message.react('🔴');
+                
                 //set up listener using awaitreactions or createreactioncollector or do a generalized on('messageReactionAdd') listener
+                
                 var params = {
                     TableName: table,
                     Key:{
@@ -98,9 +103,6 @@ client.on('message', async (message) => {
                     },
                     ReturnValues: "UPDATED_NEW"
                 };
-                card_message.react('🟢');
-                card_message.react('🟡');
-                card_message.react('🔴');
                 dynamo_client.update(params, function(err, data) {
                     if(err) {
                         console.error(JSON.stringify(err, null, 2));
