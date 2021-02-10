@@ -4,12 +4,16 @@ const client = new Discord.Client();
 var http = require('http');
 var Router = require('router');
 var finalhandler = require('finalhandler');
+var AWS = require('aws-sdk');
+AWS.config.update({
+    region: 'us-east-1'
+});
+var dynamo_client = new AWS.DynamoDB.DocumentClient();
+var table = process.env.table_name;
 
 client.login(process.env.app_token);
 
 var command_pattern = /^!consentbot\ (.*)$/im;
-
-var duels = [];
 
 client.on('ready', () => {
     client.user.setActivity("Informative blurb here");
@@ -17,6 +21,17 @@ client.on('ready', () => {
 
 client.on('guildCreate', (guild) => {
   // Client has joined a guild. Prompt for initial setup steps.
+    var params = {
+        TableName: table,
+        Item:{
+            "guild_id": guild
+        }
+    };
+    dynamo_client.put(params, function(err, data) {
+        if(err) {
+            console.error(JSON.stringify(err, null, 2));
+        }
+    });
 });
 
 client.on('message', async (message) => {
