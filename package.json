@@ -1,0 +1,25 @@
+
+{
+  "name": "consentbot",
+  "version": "0.0.1",
+  "description": "Aid in managing player comfort for Discord driven roleplaying.",
+  "author": "Allison <me@ajl.io> (https://ajl.io)",
+  "homepage": "https://github.com/aletson/consentbot",
+  "engines": {
+    "node": "12.x"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "discord.js": "latest",
+    "finalhandler": "latest",
+    "router": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aletson/duelbot"
+  },
+  "license": "MIT"
+}
