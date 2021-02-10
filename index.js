@@ -14,9 +14,11 @@ var table = process.env.table_name;
 client.login(process.env.app_token);
 
 var command_pattern = /^!consentbot\ (.*)$/im;
+var collectors_by_channel = new Array();
 
 client.on('ready', () => {
     client.user.setActivity("Informative blurb here");
+    //check any card_message attributes and initialize collectors again (crash defense)
 });
 
 client.on('guildCreate', (guild) => {
@@ -61,8 +63,35 @@ client.on('message', async (message) => {
                     } else {
                         message.react('✅');
                     }
-                });
-            } // end modrole command!
+                }); // end modrole command!
+            } else if (command.substr(0, message.content.indexOf(' ')) == 'cardchannel') {
+                var card_message = await message.mentions.channels.first.send('Placeholder text for reacting for cards');
+                //set up listener using awaitreactions or createreactioncollector or do a generalized on('messageReactionAdd') listener
+                var params = {
+                    TableName: table,
+                    Key:{
+                        "guild_id": message.guild.id
+                    },
+                    UpdateExpression: "set card_channel = :c, card_message = :m",
+                    ExpressionAttributeValues:{
+                        ":c":message.mentions.channels.first.id,
+                        ":m":card_message.id
+                    },
+                    ReturnValues: "UPDATED_NEW"
+                };
+                card_message.react('🟢');
+                card_message.react('🟡');
+                card_message.react('🔴');
+                dynamo_client.update(params, function(err, data) {
+                    if(err) {
+                        console.error(JSON.stringify(err, null, 2));
+                    } else {
+                        message.react('✅');
+                    }
+                }); // end cardchannel command!
+            } else if (command.substr(0, message.content.indexOf(' ')) == 'lineschannel') {
+                
+            }
         }
     }
 
