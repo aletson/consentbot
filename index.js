@@ -64,6 +64,25 @@ client.on('message', async (message) => {
                         message.react('✅');
                     }
                 }); // end modrole command!
+            } else if (command.substr(0, message.content.indexOf(' ')) == 'pingchannel') {
+                var params = {
+                    TableName: table,
+                    Key:{
+                        "guild_id": message.guild.id
+                    },
+                    UpdateExpression: "set ping_channel = :c",
+                    ExpressionAttributeValues:{
+                        ":c":message.mentions.channels.first.id
+                    },
+                    ReturnValues: "UPDATED_NEW"
+                };
+                dynamo_client.update(params, function(err, data) {
+                    if(err) {
+                        console.error(JSON.stringify(err, null, 2));
+                    } else {
+                        message.react('✅');
+                    }
+                }); // end pingchannel command!
             } else if (command.substr(0, message.content.indexOf(' ')) == 'cardchannel') {
                 var card_message = await message.mentions.channels.first.send('Placeholder text for reacting for cards');
                 //set up listener using awaitreactions or createreactioncollector or do a generalized on('messageReactionAdd') listener
@@ -90,7 +109,25 @@ client.on('message', async (message) => {
                     }
                 }); // end cardchannel command!
             } else if (command.substr(0, message.content.indexOf(' ')) == 'lineschannel') {
-                
+                var lines_message = await messages.mentions.channels.first.send('Placeholder text for what lines are');
+                var params = {
+                    TableName: table,
+                    Key:{
+                        "guild_id": message.guild.id
+                    },
+                    UpdateExpression: "set lines_channel = :c",
+                    ExpressionAttributeValues:{
+                        ":c":message.mentions.channels.first.id
+                    },
+                    ReturnValues: "UPDATED_NEW"
+                };
+                dynamo_client.update(params, function(err, data) {
+                    if(err) {
+                        console.error(JSON.stringify(err, null, 2));
+                    } else {
+                        message.react('✅');
+                    }
+                }); // end lineschannel command!
             }
         }
     }
