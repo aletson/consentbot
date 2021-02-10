@@ -43,8 +43,26 @@ client.on('message', async (message) => {
     } else {
         if (command_pattern.test(message.content)) {
             var command = message.content.substr(message.content.indexOf(' ')+1);
-            //Test this string to start with recognized commands
-            //then substring it again as above to get the channel ID or role ID or whatever.
+            if (command.substr(0, message.content.indexOf(' ')) == 'modrole') {
+                var params = {
+                    TableName: table,
+                    Key:{
+                        "guild_id": message.guild.id
+                    },
+                    UpdateExpression: "set mod_role = :r",
+                    ExpressionAttributeValues:{
+                        ":r":message.mentions.roles.first.id
+                    },
+                    ReturnValues: "UPDATED_NEW"
+                };
+                dynamo_client.update(params, function(err, data) {
+                    if(err) {
+                        console.error(JSON.stringify(err, null, 2));
+                    } else {
+                        message.react('✅');
+                    }
+                });
+            } // end modrole command!
         }
     }
 
