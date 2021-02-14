@@ -15,7 +15,8 @@
   "dependencies": {
     "discord.js": "latest",
     "finalhandler": "latest",
-    "router": "latest"
+    "router": "latest",
+    "aws": "latest"
   },
   "repository": {
     "type": "git",
